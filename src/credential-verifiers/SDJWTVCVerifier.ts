@@ -67,8 +67,10 @@ export function SDJWTVCVerifier(args: {
 			typeof parseResult.credential.jwt.header['alg'] === 'string'
 		) {
 			try {
+				// This public key is exported in the verification result. Browser
+				// imports otherwise default to non-extractable when JWK.ext is absent.
 				const holderPublicKey = await importJWK(
-					cnf.jwk as JWK,
+					{ ...(cnf.jwk as JWK), ext: true },
 					parseResult.credential.jwt.header['alg'],
 				);
 				return {
